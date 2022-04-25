@@ -1,0 +1,129 @@
+﻿<Page
+    x:Class="Ya.D.Views.ProfilePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Ya.D.ViewModels"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:ProfileViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ClearCacheButton.(RelativePanel.AlignHorizontalCenterWithPanel)" Value="True"/>
+                        <Setter Target="ClearCacheButton.(RelativePanel.Below)" Value="DefaultEmail"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ClearCacheButton.(RelativePanel.AlignRightWith)" Value="Avatar"/>
+                        <Setter Target="ClearCacheButton.(RelativePanel.Below)" Value="pageHeader"/>
+                        <Setter Target="ClearCacheButton.(RelativePanel.AlignRightWithPanel)" Value="True"/>
+                        <Setter Target="Avatar.(RelativePanel.AlignHorizontalCenterWithPanel)" Value="False"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <controls:PageHeader x:Name="pageHeader" 
+                             Content="Profile"
+                             Frame="{x:Bind Frame}"
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True" />
+        <Ellipse x:Name="Avatar"
+                 RelativePanel.AlignHorizontalCenterWithPanel="True"
+                 RelativePanel.Below="pageHeader"
+                 Margin="10"
+                 Width="150" Height="150">
+            <Ellipse.Fill>
+                <ImageBrush ImageSource="{Binding Profile.ImagePath}"/>
+            </Ellipse.Fill>
+        </Ellipse>
+        <ItemsControl x:Name="ListedName" 
+                      ItemsSource="{Binding Profile.NamePieces}"
+                      RelativePanel.AlignHorizontalCenterWith="Avatar"
+                      RelativePanel.Below="Avatar">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding First}" Foreground="Red" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding Rest}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <TextBlock 
+            x:Name="DefaultEmail" 
+            Text="{Binding Profile.DefaultEmail}"
+            RelativePanel.AlignHorizontalCenterWith="ListedName"
+            RelativePanel.Below="ListedName"
+            Foreground="{ThemeResource BolderStateForeground}"/>
+
+        <Button 
+            x:Name="ClearCacheButton"
+            Content="Clear cache" 
+            Tapped="{x:Bind ViewModel.ClearChacheAsync}"
+            Margin="3"
+            Width="100"/>
+        <Button
+            x:Name="LogoutButton"
+            RelativePanel.AlignHorizontalCenterWith="ClearCacheButton"
+            RelativePanel.Below="ClearCacheButton"
+            Content="Logout"
+            Margin="3"
+            Tapped="{x:Bind ViewModel.LogoutAsync}"
+            Width="100"/>
+
+        <Grid RelativePanel.AlignHorizontalCenterWithPanel="True"
+              RelativePanel.AlignBottomWithPanel="True"
+              Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="UsedSpace"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Minimum="0" 
+                         Maximum="{Binding Quota.TotalSpace}"                          
+                         Value="{Binding Quota.UsedSpace}"
+                         Foreground="{ThemeResource HighLightedBlue}"
+                         BorderThickness="1"
+                         Height="20" Width="250"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Used: " Foreground="{ThemeResource BolderStateForeground}" Margin="0,0,5,0" FontSize="12"/>
+                <TextBlock Text="{Binding Quota.UsedSpace, Converter={StaticResource MemorySize}}"
+                           Foreground="{ThemeResource HighLightedBlue}"
+                           FontSize="12"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="Available: " Foreground="{ThemeResource BolderStateForeground}" Margin="0,0,5,0" FontSize="12"/>
+                <TextBlock Text="{Binding Quota.AvailableSpace, Converter={StaticResource MemorySize}}"
+                           Foreground="{ThemeResource HighLightedBlue}"
+                           FontSize="12"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="1">
+
+            </StackPanel>
+        </Grid>
+    </RelativePanel>
+</Page>

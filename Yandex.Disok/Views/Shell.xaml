@@ -1,0 +1,134 @@
+﻿<Page x:Class="Ya.D.Views.Shell"
+      x:Name="ShellPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:Controls="using:Template10.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:views="using:Ya.D.Views"
+      Background="Transparent"      
+      mc:Ignorable="d">
+
+    <RelativePanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateWide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Controls:HamburgerMenu x:Name="MyHamburgerMenu"
+                                VisualStateNormalMinWidth="20"
+                                RelativePanel.AlignBottomWithPanel="True"
+                                RelativePanel.AlignTopWithPanel="True"
+                                RelativePanel.AlignLeftWithPanel="True"
+                                RelativePanel.AlignRightWithPanel="True">
+            <Controls:HamburgerMenu.PrimaryButtons>
+                <!--  mainpage button  -->
+                <Controls:HamburgerButtonInfo PageType="views:MainPage">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Home" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Home" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+
+                <Controls:HamburgerButtonInfo PageType="views:PhotosPage">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Pictures" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Photos" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+
+                <Controls:HamburgerButtonInfo PageType="views:AudioPage">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Audio" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Music" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+                
+                <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:VideoPage">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Video" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Video" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.PrimaryButtons>
+
+            <Controls:HamburgerMenu.SecondaryButtons>
+                <!--  profile button  -->
+                <Controls:HamburgerButtonInfo PageType="views:ProfilePage">
+                    <Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                        <SuppressNavigationTransitionInfo />
+                    </Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                    <StackPanel Orientation="Horizontal">
+                        <ToolTipService.ToolTip>
+                            <TextBlock MaxWidth="225"
+                                       Text="This is the tooltip for the Show Profile command button. Remember to localize."
+                                       TextWrapping="Wrap" />
+                        </ToolTipService.ToolTip>
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Contact" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="User profile" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+                <!--  settingspage button  -->
+                <Controls:HamburgerButtonInfo PageParameter="0"
+                                              PageType="views:SettingsPage">
+                    <Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                        <SuppressNavigationTransitionInfo />
+                    </Controls:HamburgerButtonInfo.NavigationTransitionInfo>
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48"
+                                    Height="48"
+                                    Symbol="Setting" />
+                        <TextBlock Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="Settings" />
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+                <!--  media control -->
+                <Controls:HamburgerButtonInfo ButtonType="Literal"
+                                              Visibility="{Binding ElementName=MyHamburgerMenu, Path=IsOpen, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ValueWhenVisibility}}">
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.SecondaryButtons>
+        </Controls:HamburgerMenu>
+    </RelativePanel>
+</Page>

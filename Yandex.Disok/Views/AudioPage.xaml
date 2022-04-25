@@ -1,0 +1,75 @@
+﻿<Page
+    x:Class="Ya.D.Views.AudioPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Ya.D.ViewModels"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:AudioViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+    
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <controls:PageHeader x:Name="pageHeader" 
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True"
+                             Content="{Binding PageTitle}">
+            <controls:PageHeader.PrimaryCommands>
+                <AppBarButton Click="{x:Bind ViewModel.GotoPlayer}" Icon="Play" Label="Media player" Foreground="{ThemeResource CustomColorBrush}"/>
+            </controls:PageHeader.PrimaryCommands>
+            <controls:PageHeader.SecondaryCommands>
+                <AppBarButton Click="{x:Bind ViewModel.AddAudio}" Label="Add audio"/>
+            </controls:PageHeader.SecondaryCommands>
+        </controls:PageHeader>
+        <GridView x:Name="AudioItems" 
+                  RelativePanel.Below="pageHeader"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True"
+                  SizeChanged="{x:Bind ViewModel.GridSizeChanged}"
+                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                  ItemsSource="{x:Bind ViewModel.Items}"
+                  Margin="5,5,0,10">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel x:Name="ItemGrid">
+                        <StackPanel.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Name="PlayItem" Text="Play" Icon="Play" 
+                                                Command="{Binding ElementName=AudioItems, Path=DataContext.PlayCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutItem x:Name="AddItemToPlayList" Text="Add to playlist" Icon="Add" 
+                                                Command="{Binding ElementName=AudioItems, Path=DataContext.AddToPlaylistCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutItem x:Name="RemoveItemPlayList" Text="Remove from playlist" Icon="Cancel" 
+                                                Command="{Binding ElementName=AudioItems, Path=DataContext.RemoveFromPlaylistCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem x:Name="DownloadItem" Text="Download" Icon="Download" 
+                                                Command="{Binding ElementName=AudioItems, Path=DataContext.DownloadCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutItem x:Name="DeleteItem" Text="Delete" Icon="Delete" 
+                                                Command="{Binding ElementName=AudioItems, Path=DataContext.DeleteCMD}" CommandParameter="{Binding}"/>
+                            </MenuFlyout>
+                        </StackPanel.ContextFlyout>
+                        <Image x:Name="AudioIcon" 
+                               Source="ms-appx://Ya.D/Assets/Icons/icon_audio.png"
+                               MaxWidth="120"
+                               Stretch="Uniform" 
+                               VerticalAlignment="Top"/>
+                        <TextBlock x:Name="ItemNameField"
+                                   Text="{Binding DisplayName}"
+                                   Style="{ThemeResource ValueText}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+        <ProgressBar RelativePanel.AlignBottomWithPanel="True" 
+                     RelativePanel.AlignLeftWithPanel="True"
+                     RelativePanel.AlignRightWithPanel="True"
+                     Visibility="{Binding Items.IsLoading, Converter={StaticResource ValueWhenVisibility}, UpdateSourceTrigger=PropertyChanged}"
+                     IsIndeterminate="True"
+                     VerticalAlignment="Center"
+                     Height="10"/>
+    </RelativePanel>
+</Page>

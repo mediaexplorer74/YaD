@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="Ya.D.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="MainGrid">
+        <WebView
+            Visibility="{Binding LoginURL, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ValueWhenVisibility}}"
+            Source="{Binding LoginURL, UpdateSourceTrigger=PropertyChanged}"
+            NavigationStarting="WebView_NavigationStarting"/>
+        <RelativePanel Visibility="{Binding LoginURL, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ValueWhenVisibilityReverse}}">
+            <Ellipse 
+                 x:Name="ProfileLogo" 
+                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                 RelativePanel.AlignHorizontalCenterWithPanel="True"
+                 Margin="5"
+                 Width="150" Height="150">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding UserInfo.ImagePath}"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <ItemsControl 
+                x:Name="ListedName" 
+                ItemsSource="{Binding UserInfo.NamePieces}"
+                RelativePanel.AlignHorizontalCenterWith="ProfileLogo"
+                RelativePanel.Below="ProfileLogo">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding First}" Foreground="Red" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Rest}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button
+                x:Name="ReLogin"
+                RelativePanel.Below="ListedName"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                Command="{Binding ReLoginCMD}"
+                Width="120" Margin="0,10"
+                Content="Login"/>
+        </RelativePanel>
+    </Grid>
+</Page>

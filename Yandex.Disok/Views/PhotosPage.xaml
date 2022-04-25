@@ -1,0 +1,81 @@
+﻿<Page
+    x:Class="Ya.D.Views.PhotosPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Ya.D.ViewModels"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:PhotosViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">        
+        <controls:PageHeader x:Name="pageHeader" 
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True"
+                             Text="Photos feed">
+            <controls:PageHeader.SecondaryCommands>
+                <AppBarButton Click="{x:Bind ViewModel.AddPhoto}" Label="Add photo"/>
+                <AppBarButton Click="{x:Bind ViewModel.TakeAPhoto}" Label="Take a photo"/>
+            </controls:PageHeader.SecondaryCommands>
+        </controls:PageHeader>
+        <GridView x:Name="PhotoItems" 
+                  RelativePanel.Below="pageHeader"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True"
+                  SizeChanged="{x:Bind ViewModel.GridSizeChanged}"
+                  ItemsSource="{x:Bind ViewModel.Items}"
+                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                  SelectionMode="Single"
+                  Margin="5,0,5,10">
+            <GridView.Transitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition/>
+                    <RepositionThemeTransition/>
+                    <ReorderThemeTransition/>
+                </TransitionCollection>
+            </GridView.Transitions>
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Name="SeeDeatails" Text="Details" Icon="More" 
+                                                Command="{Binding ElementName=PhotoItems, Path=DataContext.GoToDetailsCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutItem x:Name="DownloadItem" Text="Download" Icon="Download" 
+                                                Command="{Binding ElementName=PhotoItems, Path=DataContext.DownloadCMD}" CommandParameter="{Binding}"/>
+                                <MenuFlyoutItem x:Name="DeleteItem" Text="Delete" Icon="Delete" 
+                                                Command="{Binding ElementName=PhotoItems, Path=DataContext.DeleteCMD}" CommandParameter="{Binding}"/>
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                        <StackPanel Padding="3">
+                            <Image Source="{Binding PreviewImage, Converter={StaticResource BytesToImage}, UpdateSourceTrigger=PropertyChanged}"
+                                   Stretch="Uniform"/>
+                            <Grid Visibility="{Binding PreviewImage, Converter={StaticResource ValueWhenVisibilityReverse}}">
+                                <Image Source="ms-appx://Ya.D/Assets/Icons/icon_no_image.png"
+                                       Stretch="UniformToFill"
+                                       Visibility="{Binding PreviewImage, Converter={StaticResource ValueWhenVisibilityReverse}}"/>
+                                <ProgressRing IsActive="{Binding PreviewImage, Converter={StaticResource NullToBoolR}}"/>
+                            </Grid>
+                            <TextBlock Text="{Binding DisplayName}"
+                                       Style="{ThemeResource ValueText}"
+                                       FontSize="12"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+        <ProgressBar RelativePanel.AlignBottomWithPanel="True" 
+                     RelativePanel.AlignLeftWithPanel="True"
+                     RelativePanel.AlignRightWithPanel="True"
+                     Visibility="{Binding Items.IsLoading, Converter={StaticResource ValueWhenVisibility}, UpdateSourceTrigger=PropertyChanged}"
+                     IsIndeterminate="True"
+                     VerticalAlignment="Center"
+                     Height="10"/>
+    </RelativePanel>
+</Page>

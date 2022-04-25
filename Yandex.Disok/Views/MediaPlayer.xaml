@@ -1,0 +1,140 @@
+﻿<Page
+    x:Class="Ya.D.Views.MediaPlayer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Ya.D.ViewModels"
+    mc:Ignorable="d">
+    <Page.Resources>
+        
+    </Page.Resources>
+    <Page.DataContext>
+        <vm:MediaPlayerViewModel x:Name="ViewModel"/>
+    </Page.DataContext>
+
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                   Padding="5">
+        <TextBlock x:Name="CurrentlyPlayingBlock"
+                   RelativePanel.AlignLeftWithPanel="True"
+                   RelativePanel.AlignRightWithPanel="True" 
+                   Text="{Binding CurrentItem.DisplayName}"
+                   Style="{StaticResource ValueText}"
+                   Visibility="{Binding CurrentItem, Converter={StaticResource ValueWhenVisibility}}"
+                   FontSize="16"/>
+
+        <Pivot RelativePanel.Below="CurrentlyPlayingBlock"
+               RelativePanel.AlignLeftWithPanel="True"
+               RelativePanel.AlignRightWithPanel="True"
+               RelativePanel.AlignBottomWithPanel="True"
+               Style="{StaticResource PivotStyleDynamicHeader}">
+            <Pivot.Resources>
+                <Style BasedOn="{StaticResource PivotStyle}" TargetType="PivotHeaderItem"/>
+            </Pivot.Resources>
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel Width="100" HorizontalAlignment="Center" Height="50">
+                        <Image Width="25" Source="../../Assets/icons/icon_player.png" Stretch="Uniform" />
+                        <TextBlock Text="Player" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </PivotItem.Header>
+                <Grid>
+                    <MediaPlayerElement x:Name="MainMediaElement"                                        
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        AreTransportControlsEnabled="True"/>
+                    <Canvas x:Name="MediaSurface"/>
+                </Grid>
+                
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel Width="100" HorizontalAlignment="Center">
+                        <Image Width="25" Source="../../Assets/icons/icon_onair.png" Stretch="Uniform" />
+                        <TextBlock Text="On air" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </PivotItem.Header>
+                <StackPanel>
+                    <TextBlock Text="{Binding CurrentPlaylist.Name}"/>
+                    <ListView ItemsSource="{Binding CurrentPlaylist.DiskItems}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <StackPanel Width="100" HorizontalAlignment="Center">
+                        <Image Width="25" Source="../../Assets/icons/icon_playlist.png" Stretch="Uniform" />
+                        <TextBlock Text="Lists" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </PivotItem.Header>
+                <Grid>
+                    <Grid.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="Add new playlist" Click="{x:Bind ViewModel.AddPlayList}"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Play selected items"/>
+                            <MenuFlyoutItem Text="Remove selected items"/>
+                        </MenuFlyout>
+                    </Grid.ContextFlyout>
+                    <ItemsControl x:Name="TrackList"
+                                  RelativePanel.Below="pageHeader"
+                                  RelativePanel.AlignLeftWithPanel="True"
+                                  RelativePanel.AlignRightWithPanel="True"
+                                  RelativePanel.AlignBottomWithPanel="True"
+                                  ItemsSource="{x:Bind ViewModel.AllPlaylists}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Command="{Binding ElementName=TrackList, Path=DataContext.PlayAListCMD}" 
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent">
+                                            <SymbolIcon Symbol="Play"/>
+                                        </Button>
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource BaseText}" 
+                                                   FontSize="18"/>
+                                        <TextBlock Text="{Binding Type.Name, Converter={StaticResource StringFormat}, ConverterParameter='({0})'}"
+                                                   Style="{StaticResource BaseText}"
+                                                   Foreground="{ThemeResource SelectionColor}"
+                                                   FontSize="18"/>
+                                    </StackPanel>
+
+                                    <ListView ItemsSource="{Binding DiskItems}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Command="{Binding ElementName=TrackList, Path=DataContext.PlayCMD}" 
+                                                            CommandParameter="{Binding}"
+                                                            Background="Transparent">
+                                                        <SymbolIcon Symbol="Play"/>
+                                                    </Button>
+                                                    <Button Command="{Binding ElementName=TrackList, Path=DataContext.RemoveFromListCMD}" 
+                                                            CommandParameter="{Binding}"
+                                                            Background="Transparent">
+                                                        <SymbolIcon Symbol="Cancel"/>
+                                                    </Button>
+                                                    <TextBlock Style="{StaticResource ItemNameNormal}"
+                                                               Text="{Binding DisplayName}"
+                                                               HorizontalAlignment="Left"
+                                                               TextWrapping="WrapWholeWords"
+                                                               FontSize="14"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+    </RelativePanel>
+</Page>

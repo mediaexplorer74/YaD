@@ -1,5 +1,5 @@
 # YaD (Yandex.Disok)
-The fork of UWP project by Dukhnich Vladislav (vd@sys.im)
+The fork of lost "Ya.D" (Yandex.Disok) project by Dukhnich Vladislav (vd@sys.im)
 
 ## What is this
 My goal was to port the code on Windows-phone 10 :) 
